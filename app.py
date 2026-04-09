@@ -9,7 +9,7 @@ from sqlalchemy.sql import func
 
 # -------------------- Flask Setup --------------------
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'yoursecretkey'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-key-very-secret')
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(BASE_DIR, 'local_services.db')
@@ -17,11 +17,12 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-# create the db on server
-with app.app_context():
-    db.create_all()
-    print("Database tables created successfully!")
-    
+if __name__ == "__main__":
+    with app.app_context():
+        db.create_all()
+    # On Render, we don't use app.run(), but this is good for local testing
+    app.run(debug=True)
+
 login_manager = LoginManager()
 login_manager.login_view = 'login'
 login_manager.init_app(app)
