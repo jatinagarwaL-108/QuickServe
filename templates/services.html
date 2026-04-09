@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Available Services</h3>
+
+<form method="GET" class="row g-2 mb-4">
+    <div class="col-md-4">
+        <input type="text" name="q" class="form-control" placeholder="Search service..." value="{{ request.args.q }}">
+    </div>
+    <div class="col-md-4">
+        <input type="text" name="location" class="form-control" placeholder="Filter by location" value="{{ request.args.location }}">
+    </div>
+    <div class="col-md-2">
+        <button class="btn btn-secondary w-100">Filter</button>
+    </div>
+</form>
+
+<div class="row">
+    {% for s in services %}
+    <div class="col-md-4 mb-4">
+        <div class="card shadow">
+            <div class="card-body">
+                <h5 class="card-title">{{ s.name }}</h5>
+                <p class="card-text">{{ s.description }}</p>
+                <p><strong>Price:</strong> ₹{{ s.price }}</p>
+                <p><strong>Location:</strong> {{ s.location }}</p>
+
+                <p>
+                Rating:
+                {% if s.avg_rating > 0 %}
+                    {% for i in range(s.avg_rating|round|int) %}
+                        ⭐
+                    {% endfor %}
+                    ({{ s.avg_rating }}/5)
+                {% else %}
+                    No ratings yet
+                {% endif %}
+            </p>
+
+                {% if current_user.is_authenticated and current_user.role == 'customer' %}
+                    <a href="{{ url_for('book', service_id=s.id) }}" class="btn btn-primary">Book Now</a>
+                {% else %}
+                    <p class="text-muted"><small>Login as customer to book</small></p>
+                {% endif %}
+
+                {% if current_user.is_authenticated and current_user.role == 'customer' %}
+    <a href="{{ url_for('hire', service_id=s.id) }}" class="btn btn-primary">Rate Now</a>
+{% endif %}
+
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <p>No services available at the moment.</p>
+    {% endfor %}
+</div>
+{% endblock %}

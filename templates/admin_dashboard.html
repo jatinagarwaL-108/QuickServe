@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4">Admin Dashboard</h2>
+
+<!-- ✅ Tabs Navigation -->
+<ul class="nav nav-tabs mb-4" id="adminTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="providers-tab" data-bs-toggle="tab" data-bs-target="#providers" type="button" role="tab">Providers</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="services-tab" data-bs-toggle="tab" data-bs-target="#services" type="button" role="tab">Active Services</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="customers-tab" data-bs-toggle="tab" data-bs-target="#customers" type="button" role="tab">Customers</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="bookings-tab" data-bs-toggle="tab" data-bs-target="#bookings" type="button" role="tab">Bookings</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="complaints-tab" data-bs-toggle="tab" data-bs-target="#complaints" type="button" role="tab">Complaints</button>
+    </li>
+</ul>
+
+<div class="tab-content" id="adminTabsContent">
+
+    <!-- ✅ Providers Tab -->
+    <div class="tab-pane fade show active" id="providers" role="tabpanel">
+        <h4>All Service Providers</h4>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered shadow">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Location</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in providers %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.location or "N/A" }}</td>
+                        <td>
+                            <a href="{{ url_for('delete_provider', provider_id=user.id) }}" class="btn btn-danger btn-sm"
+                               onclick="return confirm('Delete this provider? All related services will also be removed!');">
+                               Delete
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ✅ Active Services Tab -->
+    <div class="tab-pane fade" id="services" role="tabpanel">
+        <h4>All Active Services</h4>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover shadow-sm">
+                <thead class="table-primary">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Provider ID</th>
+                        <th>Price</th>
+                        <th>Location</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in active_services %}
+                    <tr>
+                        <td>{{ s.id }}</td>
+                        <td>{{ s.name }}</td>
+                        <td>{{ s.provider_id }}</td>
+                        <td>₹{{ s.price }}</td>
+                        <td>{{ s.location }}</td>
+                        <td>
+                            <a href="{{ url_for('delete_service', service_id=s.id) }}" class="btn btn-danger btn-sm"
+                               onclick="return confirm('Delete this service?');">
+                               Delete
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ✅ Customers Tab -->
+    <div class="tab-pane fade" id="customers" role="tabpanel">
+        <h4>All Customers</h4>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered shadow">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Location</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in customers %}
+                    <tr>
+                        <td>{{ c.id }}</td>
+                        <td>{{ c.username }}</td>
+                        <td>{{ c.email }}</td>
+                        <td>{{ c.location or "N/A" }}</td>
+                        <td>
+                            <a href="{{ url_for('delete_customer', customer_id=c.id) }}" class="btn btn-danger btn-sm"
+                               onclick="return confirm('Delete this customer? All related bookings will also be removed!');">
+                               Delete
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ✅ Bookings Tab -->
+    <div class="tab-pane fade" id="bookings" role="tabpanel">
+        <h4>All Bookings</h4>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover shadow-sm">
+                <thead class="table-primary">
+                    <tr>
+                        <th>ID</th>
+                        <th>Customer ID</th>
+                        <th>Provider ID</th>
+                        <th>Status</th>
+                        <th>Rating</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for b in bookings %}
+                    <tr>
+                        <td>{{ b.id }}</td>
+                        <td>{{ b.customer_id }}</td>
+                        <td>{{ b.provider_id }}</td>
+                        <td>{{ b.status }}</td>
+                        <td>{{ b.rating if b.rating > 0 else "Not Rated" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ✅ Complaints Tab -->
+    <div class="tab-pane fade" id="complaints" role="tabpanel">
+        <h4>User Complaints</h4>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover shadow-sm">
+                <thead class="table-danger">
+                    <tr>
+                        <th>ID</th>
+                        <th>User</th>
+                        <th>Complaint</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for comp in complaints %}
+                    <tr>
+                        <td>{{ comp.id }}</td>
+                        <td>
+                            {{ comp.user.username }}<br>
+                            <small class="text-muted">{{ comp.user.email }}</small>
+                        </td>
+                        <td>{{ comp.complaint_text }}</td>
+                        <td>
+                            <span class="badge bg-{{ 'success' if comp.status=='Resolved' else 'warning' }}">
+                                {{ comp.status }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if comp.status == 'Pending' %}
+                            <a href="{{ url_for('resolve_complaint', complaint_id=comp.id) }}" class="btn btn-success btn-sm">
+                                Mark Resolved
+                            </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
