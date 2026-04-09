@@ -1,4 +1,4 @@
-QuickServe (or your chosen name)
+QuickServe
 
 📌 Project Overview
 QuickServe is a robust, full-stack local service marketplace designed to bridge the gap between skilled service providers and customers.
