@@ -17,6 +17,11 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
+# create the db on server
+with app.app_context():
+    db.create_all()
+    print("Database tables created successfully!")
+    
 login_manager = LoginManager()
 login_manager.login_view = 'login'
 login_manager.init_app(app)
