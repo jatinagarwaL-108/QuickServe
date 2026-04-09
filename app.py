@@ -17,11 +17,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()
-    # On Render, we don't use app.run(), but this is good for local testing
-    app.run(debug=True)
 
 login_manager = LoginManager()
 login_manager.login_view = 'login'
@@ -461,4 +456,24 @@ if __name__ == '__main__':
             db.session.commit()
             print("✅ Default admin created: Email: admin@example.com | Password: admin123")
 
+    app.run(debug=True)
+
+# -------------------- Initialization & Run --------------------
+
+with app.app_context():
+    db.create_all()
+    
+    if not User.query.filter_by(role='admin').first():
+        admin_user = User(
+            username="admin",
+            email="admin@example.com",
+            password=generate_password_hash("admin123", method='pbkdf2:sha256'),
+            role="admin"
+        )
+        db.session.add(admin_user)
+        db.session.commit()
+        print("✅ Default admin created: admin@example.com")
+
+# This only runs when you run locally via 'python app.py'
+if __name__ == '__main__':
     app.run(debug=True)
