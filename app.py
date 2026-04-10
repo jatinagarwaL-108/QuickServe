@@ -443,6 +443,8 @@ def resolve_complaint(complaint_id):
 
 if __name__ == '__main__':
     with app.app_context():
+        # drop the column
+        db.drop_all()
         db.create_all()
 
         # ✅ Auto-create admin if not exists
