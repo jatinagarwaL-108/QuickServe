@@ -31,6 +31,7 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(150), nullable=False)
     role = db.Column(db.String(50), nullable=False, default='customer')  # customer/provider/admin
     location = db.Column(db.String(100))
+    phone = db.Column(db.String(20))
 
 class Service(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -459,21 +460,3 @@ if __name__ == '__main__':
     app.run(debug=True)
 
 # -------------------- Initialization & Run --------------------
-
-with app.app_context():
-    db.create_all()
-    
-    if not User.query.filter_by(role='admin').first():
-        admin_user = User(
-            username="admin",
-            email="admin@example.com",
-            password=generate_password_hash("admin123", method='pbkdf2:sha256'),
-            role="admin"
-        )
-        db.session.add(admin_user)
-        db.session.commit()
-        print("✅ Default admin created: admin@example.com")
-
-# This only runs when you run locally via 'python app.py'
-if __name__ == '__main__':
-    app.run(debug=True)
