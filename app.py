@@ -441,13 +441,14 @@ def resolve_complaint(complaint_id):
 
 # -------------------- Run & Auto Admin Creation --------------------
 
-if __name__ == '__main__':
-    with app.app_context():
-        # drop the column
+# -------------------- Final Force Reset --------------------
+with app.app_context():
+    try:
+        # This deletes the old, broken database file on Render
         db.drop_all()
         db.create_all()
-
-        # ✅ Auto-create admin if not exists
+        
+        # Create your Admin
         if not User.query.filter_by(role='admin').first():
             admin_user = User(
                 username="admin",
@@ -457,8 +458,11 @@ if __name__ == '__main__':
             )
             db.session.add(admin_user)
             db.session.commit()
-            print("✅ Default admin created: Email: admin@example.com | Password: admin123")
+            print("✅ Database Reset & Admin Created!")
+    except Exception as e:
+        print(f"⚠️ Database Error during reset: {e}")
 
+if __name__ == '__main__':
     app.run(debug=True)
 
 # -------------------- Initialization & Run --------------------
