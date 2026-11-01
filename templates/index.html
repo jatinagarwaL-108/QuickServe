@@ -27,8 +27,8 @@
                     </p>
 
                     {% if current_user.is_authenticated and current_user.role == 'customer' %}
-                        <a href="{{ url_for('book', service_id=service.id) }}" class="btn btn-primary btn-sm">Book Now</a>
-                        <a href="{{ url_for('hire', service_id=service.id) }}" class="btn btn-warning btn-sm ms-2">Rate Now</a>
+                        <a href="{{ url_for('customer.book', service_id=service.id) }}" class="btn btn-primary btn-sm">Book Now</a>
+                        <a href="{{ url_for('customer.hire', service_id=service.id) }}" class="btn btn-warning btn-sm ms-2">Rate Now</a>
                     {% else %}
                         <p class="text-muted"><small>Login as a customer to book this service</small></p>
                     {% endif %}
@@ -56,7 +56,7 @@
                 <p class="text-muted"><strong>Location:</strong> {{ service.location }}</p>
 
                 {% if current_user.is_authenticated and current_user.role == 'customer' %}
-                    <a href="{{ url_for('book', service_id=service.id) }}" class="btn btn-success btn-sm">Book Now</a>
+                    <a href="{{ url_for('customer.book', service_id=service.id) }}" class="btn btn-success btn-sm">Book Now</a>
                 {% else %}
                     <p class="text-muted"><small>Login as a customer to book this service</small></p>
                 {% endif %}

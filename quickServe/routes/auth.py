@@ -9,7 +9,7 @@ bp = Blueprint('auth', __name__)
 
 SELF_SERVICE_ROLES = ('customer', 'provider') 
 
-@bp.roue('/register',methods=['GET','POST'])
+@bp.route('/register',methods=['GET','POST'])
 def register():
     if request.method == 'POST':
         username = request.form['username']
@@ -38,7 +38,7 @@ def register():
 def login():
     if request.method == 'POST':
 
-        email = request.form['emai']
+        email = request.form['email']
         password = request.form['password']
 
         user = User.query.filter_by(email=email).first()

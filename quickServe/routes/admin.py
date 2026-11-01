@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_required, current_user
-
+from sqlalchemy.exc import IntegrityError
 from ..extensions import db
 from ..models import User, Service, Booking, Complaint
 
@@ -38,9 +38,13 @@ def admin():
 def delete_provider(provider_id):
     if current_user.role == "admin":
         provider = User.query.get_or_404(provider_id)
-        db.session.delete(provider)
-        db.session.commit()
-        flash("Provider account deleted!", "success")
+        try:
+            db.session.delete(provider)
+            db.session.commit()
+            flash("Provider account deleted!", "success")
+        except IntegrityError:
+            db.session.rollback()
+            flash("Cannot delete: this user still has bookings, services or messages.", "danger")
     return redirect(url_for('admin.admin'))
 
 
@@ -49,9 +53,13 @@ def delete_provider(provider_id):
 def delete_customer(customer_id):
     if current_user.role == "admin":
         customer = User.query.get_or_404(customer_id)
-        db.session.delete(customer)
-        db.session.commit()
-        flash("Customer account deleted!", "success")
+        try:
+            db.session.delete(customer)
+            db.session.commit()
+            flash("Customer account deleted!", "success")
+        except IntegrityError:
+            db.session.rollback()
+            flash("Cannot delete: this user still has bookings, services or messages.", "danger")
     return redirect(url_for('admin.admin'))
 
 
@@ -60,9 +68,13 @@ def delete_customer(customer_id):
 def delete_service(service_id):
     if current_user.role == "admin":
         service = Service.query.get_or_404(service_id)
-        db.session.delete(service)
-        db.session.commit()
-        flash("Service deleted successfully!", "success")
+        try:
+            db.session.delete(service)
+            db.session.commit()
+            flash("Service deleted successfully!", "success")
+        except IntegrityError:
+            db.session.rollback()
+            flash("Cannot delete: this service still has bookings.", "danger")
     return redirect(url_for('admin.admin'))
 
 

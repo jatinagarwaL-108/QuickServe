@@ -37,13 +37,13 @@
             </p>
 
                 {% if current_user.is_authenticated and current_user.role == 'customer' %}
-                    <a href="{{ url_for('book', service_id=s.id) }}" class="btn btn-primary">Book Now</a>
+                    <a href="{{ url_for('customer.book', service_id=s.id) }}" class="btn btn-primary">Book Now</a>
                 {% else %}
                     <p class="text-muted"><small>Login as customer to book</small></p>
                 {% endif %}
 
                 {% if current_user.is_authenticated and current_user.role == 'customer' %}
-    <a href="{{ url_for('hire', service_id=s.id) }}" class="btn btn-primary">Rate Now</a>
+    <a href="{{ url_for('customer.hire', service_id=s.id) }}" class="btn btn-primary">Rate Now</a>
 {% endif %}
 
             </div>

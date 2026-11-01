@@ -7,17 +7,20 @@ from ..models import Service,Booking,Complaint
 bp = Blueprint('customer',__name__)
 
 @bp.route('/book/<int:service_id>',methods = ['GET','POST'])
+@login_required
 def book(service_id):
     service = Service.query.get_or_404(service_id)
     provider_id = service.provider_id
 
     if request.method == 'POST':
+        age_text = request.form.get('age','').strip()
+        age = int(age_text) if age_text.isdigit() else None
         booking = Booking(
             customer_id=current_user.id,
             provider_id=provider_id,
             service_id=service.id,
             customer_name=request.form['customer_name'],
-            age=request.form['age'],
+            age=age,
             gender=request.form['gender'],
             address=request.form['address'],
             date=request.form['date'],
@@ -45,12 +48,12 @@ def hire(service_id):
 @bp.route('/rate/<int:booking_id>',methods = ['GET','POST'])
 @login_required
 def rate_service(booking_id):
-    booking = booking.query.get_or_404(booking_id)
+    booking = Booking.query.get_or_404(booking_id)
 
     if booking.customer_id != current_user.id:
         flash("You can only rate your own bookings.", "danger")
         return redirect(url_for('main.index'))
-    if request.form == 'POST':
+    if request.method == 'POST':
         rating = int(request.form['rating'])
 
         if 1 <= rating <= 5:

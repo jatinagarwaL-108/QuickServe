@@ -5,7 +5,7 @@ from flask_login import current_user
 from werkzeug.security import generate_password_hash
 
 from .config import Config, BASE_DIR
-from .extensions import db, login_manager
+from .extensions import db, login_manager, migrate  # CHANGED: migrate added
 
 
 def create_app(config_class=Config):
@@ -25,11 +25,11 @@ def create_app(config_class=Config):
 
     db.init_app(app)
     login_manager.init_app(app)
+    migrate.init_app(app, db)  # NEW
 
-    # Importing the models registers the tables
+    # Importing the models lets Flask-Migrate see your tables
     from . import models  # noqa: F401
 
-    # Blueprints: add one line here each time you finish moving a route file
     from .routes import auth, main, customer, provider, admin
     for module in (auth, main, customer, provider, admin):
         app.register_blueprint(module.bp)
@@ -44,26 +44,27 @@ def create_app(config_class=Config):
                 provider_id=current_user.id, status="Pending").count()
         return dict(provider_pending_count=pending_count)
 
-    with app.app_context():
-        db.create_all()  # creates MISSING tables only, never deletes anything
-        _create_admin_from_env()
+    # NEW: replaces db.create_all() and the automatic admin creation.
+    # Run it once per database, after "flask --app run db upgrade".
+    @app.cli.command('create-admin')
+    def create_admin():
+        """Create the first admin from ADMIN_EMAIL and ADMIN_PASSWORD."""
+        from .models import User
+        email = os.environ.get('ADMIN_EMAIL')
+        password = os.environ.get('ADMIN_PASSWORD')
+        if not (email and password):
+            print('Set ADMIN_EMAIL and ADMIN_PASSWORD first.')
+            return
+        if User.query.filter_by(role='admin').first():
+            print('An admin already exists.')
+            return
+        db.session.add(User(
+            username='admin',
+            email=email,
+            password=generate_password_hash(password, method='pbkdf2:sha256'),
+            role='admin',
+        ))
+        db.session.commit()
+        print('Admin created.')
 
     return app
-
-
-def _create_admin_from_env():
-    """Create the first admin from ADMIN_EMAIL / ADMIN_PASSWORD, if both are set."""
-    from .models import User
-    email = os.environ.get('ADMIN_EMAIL')
-    password = os.environ.get('ADMIN_PASSWORD')
-    if not (email and password):
-        return
-    if User.query.filter_by(role='admin').first():
-        return
-    db.session.add(User(
-        username='admin',
-        email=email,
-        password=generate_password_hash(password, method='pbkdf2:sha256'),
-        role='admin',
-    ))
-    db.session.commit()

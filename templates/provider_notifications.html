@@ -26,8 +26,8 @@
             </td>
             <td>
                 {% if b.status == 'Pending' %}
-                    <a href="{{ url_for('update_booking_status', booking_id=b.id, action='accept') }}" class="btn btn-success btn-sm">Accept</a>
-                    <a href="{{ url_for('update_booking_status', booking_id=b.id, action='reject') }}" class="btn btn-danger btn-sm">Reject</a>
+                    <a href="{{ url_for('provider.update_booking_status', booking_id=b.id, action='accept') }}" class="btn btn-success btn-sm">Accept</a>
+                    <a href="{{ url_for('provider.update_booking_status', booking_id=b.id, action='reject') }}" class="btn btn-danger btn-sm">Reject</a>
                 {% endif %}
             </td>
         </tr>

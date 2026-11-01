@@ -26,3 +26,4 @@ class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY')  # no default on purpose
     SQLALCHEMY_DATABASE_URI = _database_uri()
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_ENGINE_OPTIONS = {"pool_pre_ping": True}

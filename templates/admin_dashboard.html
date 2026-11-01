@@ -45,7 +45,7 @@
                         <td>{{ user.email }}</td>
                         <td>{{ user.location or "N/A" }}</td>
                         <td>
-                            <a href="{{ url_for('delete_provider', provider_id=user.id) }}" class="btn btn-danger btn-sm"
+                            <a href="{{ url_for('admin.delete_provider', provider_id=user.id) }}" class="btn btn-danger btn-sm"
                                onclick="return confirm('Delete this provider? All related services will also be removed!');">
                                Delete
                             </a>
@@ -81,7 +81,7 @@
                         <td>₹{{ s.price }}</td>
                         <td>{{ s.location }}</td>
                         <td>
-                            <a href="{{ url_for('delete_service', service_id=s.id) }}" class="btn btn-danger btn-sm"
+                            <a href="{{ url_for('admin.delete_service', service_id=s.id) }}" class="btn btn-danger btn-sm"
                                onclick="return confirm('Delete this service?');">
                                Delete
                             </a>
@@ -115,7 +115,7 @@
                         <td>{{ c.email }}</td>
                         <td>{{ c.location or "N/A" }}</td>
                         <td>
-                            <a href="{{ url_for('delete_customer', customer_id=c.id) }}" class="btn btn-danger btn-sm"
+                            <a href="{{ url_for('admin.delete_customer', customer_id=c.id) }}" class="btn btn-danger btn-sm"
                                onclick="return confirm('Delete this customer? All related bookings will also be removed!');">
                                Delete
                             </a>
@@ -186,7 +186,7 @@
                         </td>
                         <td>
                             {% if comp.status == 'Pending' %}
-                            <a href="{{ url_for('resolve_complaint', complaint_id=comp.id) }}" class="btn btn-success btn-sm">
+                            <a href="{{ url_for('admin.resolve_complaint', complaint_id=comp.id) }}" class="btn btn-success btn-sm">
                                 Mark Resolved
                             </a>
                             {% endif %}

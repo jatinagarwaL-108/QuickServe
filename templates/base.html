@@ -9,7 +9,7 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container">
-        <a class="navbar-brand" href="{{ url_for('index') }}">Local Services</a>
+        <a class="navbar-brand" href="{{ url_for('main.index') }}">Local Services</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -22,10 +22,10 @@
                     {# ✅ PROVIDER NAVIGATION #}
                     {% if current_user.role == "provider" %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('create_service') }}">Create Service</a>
+                            <a class="nav-link" href="{{ url_for('provider.create_service') }}">Create Service</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('provider_notifications') }}">
+                            <a class="nav-link" href="{{ url_for('provider.provider_notifications') }}">
                                 Notifications
                                 {% if provider_pending_count > 0 %}
                                     <span class="badge bg-danger">{{ provider_pending_count }}</span>
@@ -37,7 +37,7 @@
                     {# ✅ CUSTOMER NAVIGATION #}
                     {% if current_user.role == "customer" %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('customer_notifications') }}">
+                            <a class="nav-link" href="{{ url_for('customer.customer_notifications') }}">
                                 My Notifications
                             </a>
                         </li>
@@ -46,22 +46,22 @@
                     {# ✅ ADMIN NAVIGATION #}
                     {% if current_user.role == "admin" %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('admin') }}">Admin Dashboard</a>
+                            <a class="nav-link" href="{{ url_for('admin.admin') }}">Admin Dashboard</a>
                         </li>
                     {% endif %}
 
                     {# ✅ COMMON TO ALL LOGGED-IN USERS #}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('services') }}">Browse Services</a>
+                        <a class="nav-link" href="{{ url_for('main.services') }}">Browse Services</a>
                     </li>
                     <li class="nav-item">
-        <a class="nav-link" href="{{ url_for('profile') }}">Profile</a>
+        <a class="nav-link" href="{{ url_for('auth.profile') }}">Profile</a>
     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('complaint') }}">Complaint</a>
+                        <a class="nav-link" href="{{ url_for('customer.complaint') }}">Complaint</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                        <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
                     </li>
     
 
@@ -71,13 +71,13 @@
                 
                     {# ✅ FOR GUEST USERS #}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('services') }}">Browse Services</a>
+                        <a class="nav-link" href="{{ url_for('main.services') }}">Browse Services</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                        <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('register') }}">Register</a>
+                        <a class="nav-link" href="{{ url_for('auth.register') }}">Register</a>
                     </li>
 
                 {% endif %}
