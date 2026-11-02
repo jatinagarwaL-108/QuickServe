@@ -1,18 +1,13 @@
-{% extends "base.html" %}
-
-{% block content %}
-<h3>Rate Service: {{ booking.service_id }}</h3>
-<form method="POST">
-    <div class="mb-3">
-        <label for="rating" class="form-label">Give Rating (1 to 5 stars):</label>
-        <select name="rating" class="form-select">
-            <option value="1">⭐ 1</option>
-            <option value="2">⭐⭐ 2</option>
-            <option value="3">⭐⭐⭐ 3</option>
-            <option value="4">⭐⭐⭐⭐ 4</option>
-            <option value="5">⭐⭐⭐⭐⭐ 5</option>
-        </select>
-    </div>
-    <button type="submit" class="btn btn-primary">Submit Rating</button>
+{% if booking.status == 'Completed' and not booking.review %}
+<form method="post" action="{{ url_for('customer.rate_service', booking_id=booking.id) }}" class="mt-2">
+  <select name="rating" class="form-select form-select-sm mb-1" required>
+    <option value="">Rate this service</option>
+    {% for n in [5, 4, 3, 2, 1] %}<option value="{{ n }}">{{ n }} ★</option>{% endfor %}
+  </select>
+  <textarea name="text" class="form-control form-control-sm mb-1" rows="2" maxlength="1000"
+            placeholder="Write a short review (optional)"></textarea>
+  <button class="btn btn-sm btn-primary" type="submit">Submit review</button>
 </form>
-{% endblock %}
+{% elif booking.review %}
+  <span class="text-muted">Your review: {{ booking.review.rating }} ★</span>
+{% endif %}

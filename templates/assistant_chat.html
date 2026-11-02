@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h3 class="mb-0">Find a service</h3>
+      <a href="{{ url_for('assistant.chat', reset=1) }}" class="btn btn-sm btn-outline-secondary">New chat</a>
+    </div>
+
+    <div class="card shadow-sm mb-3">
+      <div class="card-body" style="min-height: 180px; white-space: pre-line;">
+        {% if not messages %}
+          <p class="text-muted mb-0">Tell me what you need, for example:
+            "My geyser is not heating, I am in Malviya Nagar, budget 1000".</p>
+        {% endif %}
+
+        {% for m in messages %}
+          {% if m.type == 'human' %}
+            <p class="text-end"><span class="badge bg-primary fs-6 text-wrap text-start">{{ m.content }}</span></p>
+          {% else %}
+            <p><span class="badge bg-secondary">Assistant</span> {{ m.content }}</p>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+
+    <form method="post" class="d-flex gap-2 mb-4">
+      <input type="text" name="message" class="form-control" maxlength="500" required autofocus
+             placeholder="Type your message">
+      <button class="btn btn-primary" type="submit">Send</button>
+    </form>
+
+    {% if results %}
+      {% for r in results %}
+      <div class="card shadow-sm mb-3">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <h5 class="card-title mb-1">{{ loop.index }}. {{ r.name }}</h5>
+            <span class="fw-bold">₹{{ '%.0f'|format(r.price) }}</span>
+          </div>
+          <p class="text-muted mb-2">{{ r.provider }} · {{ r.location }}</p>
+          <ul class="mb-2">
+            {% for reason in r.reasons %}<li>{{ reason }}</li>{% endfor %}
+          </ul>
+          <a class="btn btn-success btn-sm" href="{{ url_for('customer.book', service_id=r.service_id) }}">Book now</a>
+        </div>
+      </div>
+      {% endfor %}
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

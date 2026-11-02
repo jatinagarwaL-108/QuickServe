@@ -30,8 +30,8 @@ def create_app(config_class=Config):
     # Importing the models lets Flask-Migrate see your tables
     from . import models  # noqa: F401
 
-    from .routes import auth, main, customer, provider, admin
-    for module in (auth, main, customer, provider, admin):
+    from .routes import auth, main, customer, provider, admin,assistant
+    for module in (auth, main, customer, provider, admin,assistant):
         app.register_blueprint(module.bp)
 
     @app.context_processor
