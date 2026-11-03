@@ -76,10 +76,19 @@ class Booking(db.Model):
     status = db.Column(db.String(20), default="Pending")
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
+    problem_description = db.Column(db.Text, nullable=True)
+    resolution_status = db.Column(db.String(30),default='Unknown',nullable=False)
+
+    resolution_notes = db.Column(db.Text, nullable=True)
+    resolved_at = db.Column(db.DateTime, nullable=True)
+
+    outcome_verified = db.Column(db.Boolean,default=False,nullable=False)
+
     # NEW columns (the agent will use these later; adding them now saves a migration)
     scheduled_at = db.Column(db.DateTime, nullable=True)
     responded_at = db.Column(db.DateTime, nullable=True)
     completed_at = db.Column(db.DateTime, nullable=True)
+
     idempotency_key = db.Column(db.String(64), unique=True, nullable=True)
     created_by = db.Column(db.String(20), default='user')   # 'user' or 'agent'
 
@@ -128,6 +137,31 @@ class Review(db.Model):
     service = db.relationship('Service', backref='reviews')
 
 
+class chatbotSession(db.Model):
+    __tablename__ = "chatbot_session"
+
+    id = db.Column(db.Integer,primary_key = True)
+    user_id = db.Column(db.Integer,db.ForeignKey('user.id'),nullable=False)
+    status = db.Column(db.String(30),default = "Collection",nullable = False)
+    collected_data = db.Column(db.JSON,default=dict,nullable=False)
+
+    created_at = db.Column(db.DateTime,default=datetime.utcnow)
+
+    updated_at = db.Column(db.DateTime,default=datetime.utcnow,onupdate=datetime.utcnow)
+
+    messages = db.relationship("ChatbotMessage",backref="session",cascade="all, delete-orphan",lazy=True)
+
+class ChatbotMessage(db.Model):
+    __tablename__ = "chatbot_message"
+
+    id = db.Column(db.Integer,primary_key=True)
+
+    session_id = db.Column(db.Integer,db.ForeignKey("chatbot_session.id"),nullable = False)
+    sender = db.Column(db.String(20),nullable=False)
+    message = db.Column(db.Text,nullable = False)
+    created_at = db.Column(db.DateTime,default=datetime.utcnow)
+
+    
 @login_manager.user_loader
 def load_user(user_id):
     return db.session.get(User, int(user_id))
